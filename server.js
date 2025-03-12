@@ -15,7 +15,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+// Allow requests from your frontend URL
+app.use(cors({
+  origin: "https://blog-frontend1-gm2g.onrender.com",  // Replace with your actual frontend URL
+  methods: "GET,POST",  // Allow specific methods
+  allowedHeaders: "Content-Type"  // Allow specific headers
+}));
+
 app.use(bodyParser.json());
 
 // PostgreSQL Connection
