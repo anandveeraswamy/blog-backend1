@@ -14,12 +14,24 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Convert ALLOWED_ORIGINS from a string to an array
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",") // Split comma-separated values
+  : [];
+console.log(allowedOrigins);
 // Middleware
 // Allow requests from your frontend URL
 app.use(cors({
-  origin: "https://blog-frontend1-gm2g.onrender.com",  // Replace with your actual frontend URL
-  methods: "GET,POST",  // Allow specific methods
-  allowedHeaders: "Content-Type"  // Allow specific headers
+  origin: function (origin, callback) {
+    console.log("Request Origin:", origin);
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);  // Allow request
+    } else {
+      callback(new Error("Not allowed by CORS"));  // Block request
+    }
+  },
+  methods: "GET,POST",
+  allowedHeaders: "Content-Type"
 }));
 
 app.use(bodyParser.json());
